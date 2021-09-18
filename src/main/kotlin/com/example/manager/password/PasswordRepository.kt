@@ -8,6 +8,6 @@ import java.util.*
 
 @Repository
 interface PasswordRepository : JpaRepository<Password, Long>{
-    @Query("SELECT p FROM Password p WHERE p.id = ?1")
-    fun getUser(id: Long) : Optional<Password>
+    @Query("SELECT p FROM Password p WHERE p.client.id = ?1")
+    fun getPasswordFromClient(clientID: Long) : Collection<Password>
 }

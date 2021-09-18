@@ -9,9 +9,9 @@ class ClientController {
     @Autowired
     lateinit var clientService: ClientService
 
-    @GetMapping("get")
-    fun get(@PathVariable id: Long) : Client{
-        return clientService.getClient(id)
+    @GetMapping("get/{clientID}")
+    fun get(@PathVariable clientID: Long) : Client?{
+        return clientService.getClient(clientID)
     }
 
     @GetMapping("get/all")
@@ -20,7 +20,12 @@ class ClientController {
     }
 
     @PostMapping("register")
-    fun registerClient(@RequestBody client: Client) : Boolean {
+    fun registerClient(@RequestBody client: Client) : String {
         return clientService.registerClient(client)
+    }
+
+    @PostMapping("register/pin")
+    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
+        return clientService.registerSetUpPin(clientPinSetUp)
     }
 }
