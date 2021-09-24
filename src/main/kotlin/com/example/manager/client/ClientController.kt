@@ -28,4 +28,14 @@ class ClientController {
     fun registerSetUpPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
         return clientService.registerSetUpPin(clientPinSetUp)
     }
+
+    @PostMapping("login")
+    fun loginClient(@RequestBody client: Client) : String{
+        return clientService.loginClient(client)
+    }
+
+    @PostMapping("login/pin")
+    fun loginWithPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
+        return clientService.loginWithPin(clientPinSetUp)
+    }
 }
