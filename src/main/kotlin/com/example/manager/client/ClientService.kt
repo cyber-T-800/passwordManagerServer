@@ -16,17 +16,27 @@ class ClientService {
     lateinit var clientRepository : ClientRepository
     var logged : HashMap<String, Client> = hashMapOf()
 
+
+    /*
+    get client by id
+     */
     fun getClient(id : Long) : Client?{
         return clientRepository.findById(id).get()
     }
 
+
+    /*
+    get all registered clients
+     */
     fun getClients() : List<Client>{
         return clientRepository.findAll()
     }
 
-
-    //register client - check if client with same username doesn't exist
-    //save client with encrypted private key and hashed password
+    /*
+    register client - check if client with same username doesn't exist
+    save client with encrypted private key and hashed password
+    return client stay-login key
+    */
     fun registerClient(client: Client) : String {
         if(clientRepository.findByName(client.username) != null)
             return "0"
@@ -44,13 +54,21 @@ class ClientService {
         client.password = ""
         client.privateKey = Base64.getEncoder().encodeToString(keyPair.private.encoded)
 
-        val newLoginKey = Utils.getRandomString(30)
+        var newLoginKey = ""
+        do {
+            newLoginKey = Utils.getRandomString(30)
+        }while (logged.get(newLoginKey) != null)
 
         logged.put(newLoginKey, client)
 
         return  newLoginKey
     }
 
+
+    /*
+    set up pin for stay-login on device
+    return client private key encrypted by pin
+     */
     fun registerSetUpPin(clientPinSetUp: ClientPinSetUp) : String{
         var client: Client = logged.get(clientPinSetUp.key) ?: return "1"
 
@@ -67,6 +85,11 @@ class ClientService {
         return client.privateKey
     }
 
+
+    /*
+    login client on device
+    return client stay-login key
+     */
     fun loginClient(client: Client): String {
         val clientInDB = clientRepository.findByNameAndPassword(client.username, Base64.getEncoder()
             .encodeToString(Hashing.sha256().hashString(client.password, StandardCharsets.UTF_8).asBytes()))
@@ -75,7 +98,10 @@ class ClientService {
             val secretKey = SymmetricalCryptoUtils.getKeyFromPassword(client.password)
             client.privateKey = Base64.getEncoder().encodeToString(SymmetricalCryptoUtils.decryptMessage(secretKey, clientInDB.privateKey))
             client.password = ""
-            val newLoginKey = Utils.getRandomString(30)
+            var newLoginKey = ""
+            do {
+                newLoginKey = Utils.getRandomString(30)
+            }while (logged.get(newLoginKey) != null)
 
             logged.put(newLoginKey, client)
             return  newLoginKey
@@ -84,6 +110,10 @@ class ClientService {
         return "0"
     }
 
+    /*
+    login with stay-login pin
+    return client private key encrypted by pin
+     */
     fun loginWithPin(clientPinSetUp: ClientPinSetUp): String {
         var client: Client = logged.get(clientPinSetUp.key) ?: return "1"
 
@@ -93,6 +123,7 @@ class ClientService {
 
         return "0"
     }
+
 
 
 }
