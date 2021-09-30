@@ -9,8 +9,9 @@ class ClientController {
     @Autowired
     lateinit var clientService: ClientService
 
+
     @GetMapping("get/{clientID}")
-    fun get(@PathVariable clientID: Long) : Client?{
+    fun getById(@PathVariable clientID: Long) : Client?{
         return clientService.getClient(clientID)
     }
 
@@ -24,8 +25,9 @@ class ClientController {
         return clientService.registerClient(client)
     }
 
+    //set up pin for stay-login server instance
     @PostMapping("register/pin")
-    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
+    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String {
         return clientService.registerSetUpPin(clientPinSetUp)
     }
 

@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec
 
 object SymmetricalCryptoUtils {
 
+    //"random" value to generate secret key
     var salt = "fdioanindvninioaneeiofeoovn"
 
     fun getKeyFromPassword(password: String) : SecretKey {
