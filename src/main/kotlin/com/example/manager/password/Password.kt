@@ -22,10 +22,7 @@ data class Password(
     var username : String,
     @Column(name = "encrypted_password")
     var encryptedPassword : String,
-
-    @OneToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
-    var client: Client?
+    var clientId : Int
 ){
-    constructor() : this(0, "", "", "", null)
+    constructor() : this(0, "", "", "", 0)
 }

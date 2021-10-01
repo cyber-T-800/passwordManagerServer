@@ -12,8 +12,10 @@ class PasswordService {
 
 
     fun savePassword(password: Password) {
-        
-
         passwordRepository.save(password)
+    }
+
+    fun getByClientId(ID : Long) : Collection<Password>{
+        return passwordRepository.findByClientId(ID)
     }
 }

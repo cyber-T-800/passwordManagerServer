@@ -2,6 +2,7 @@ package com.example.manager.client
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
+import reactor.netty.transport.ClientTransport
 
 @RestController
 @RequestMapping("api/client")
@@ -21,7 +22,7 @@ class ClientController {
     }
 
     @PostMapping("register")
-    fun registerClient(@RequestBody client: Client) : String {
+    fun registerClient(@RequestBody client: Client) : ClientKeyIdData {
         return clientService.registerClient(client)
     }
 
@@ -32,12 +33,17 @@ class ClientController {
     }
 
     @PostMapping("login")
-    fun loginClient(@RequestBody client: Client) : String{
+    fun loginClient(@RequestBody client: Client) : ClientKeyIdData{
         return clientService.loginClient(client)
     }
 
     @PostMapping("login/pin")
     fun loginWithPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
         return clientService.loginWithPin(clientPinSetUp)
+    }
+
+    @GetMapping("get/logged")
+    fun getLogged() : Collection<Client>{
+        return clientService.getLogged()
     }
 }

@@ -34,10 +34,10 @@ class ClientService {
     save client with encrypted private key and hashed password
     return client stay-login key
     */
-    fun registerClient(client: Client) : String {
+    fun registerClient(client: Client) : ClientKeyIdData {
         //check if username isn't already taken
         if(clientRepository.findByName(client.username) != null)
-            return "0"
+            return ClientKeyIdData(0, "0")
 
         //generate asymmetrical key pair to encrypt passwords
         val keyPair = AsymmetricalCryptoUtils.generateCryptoKeys(2048)
@@ -66,9 +66,14 @@ class ClientService {
         }while (logged[newLoginKey] != null)
         logged[newLoginKey] = client
 
-        return  newLoginKey
+        return  ClientKeyIdData(client.id, newLoginKey)
     }
 
+
+    //only for testing purposes
+    fun getLogged() : Collection<Client>{
+        return logged.values
+    }
 
     /*
     set up pin for stay-login on device
@@ -99,30 +104,32 @@ class ClientService {
     login client on device
     return client stay-login key
      */
-    fun loginClient(client: Client): String {
+    fun loginClient(client: Client): ClientKeyIdData {
         //checks if user exists
         val clientInDB = clientRepository.findByNameAndPassword(
             client.username, Base64.getEncoder()
                 .encodeToString(Hashing.sha256().hashString(client.password, StandardCharsets.UTF_8).asBytes())
-        ) ?: return "0"
-
+        ) ?: return ClientKeyIdData(0, "0")
 
         /*
             create stay login instance on server with
             decrypted private key and empty password
             generate stay-login key and send it to client
          */
-        val secretKey = SymmetricalCryptoUtils.getKeyFromPassword(client.password)
-        client.privateKey =
-            Base64.getEncoder().encodeToString(SymmetricalCryptoUtils.decryptMessage(secretKey, clientInDB.privateKey))
-        client.password = ""
+
+        client.let {
+            it.id = clientInDB.id
+            it.privateKey =
+                Base64.getEncoder().encodeToString(SymmetricalCryptoUtils.decryptMessage(client.password, clientInDB.privateKey))
+            it.password = ""
+        }
+
         var newLoginKey = ""
         do {
             newLoginKey = Utils.getRandomString(30)
         } while (logged[newLoginKey] != null)
-
         logged[newLoginKey] = client
-        return newLoginKey
+        return ClientKeyIdData(client.id, newLoginKey)
     }
 
     /*
