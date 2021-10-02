@@ -18,9 +18,10 @@ class PasswordController {
         return null combination is invalid
      */
     @PostMapping("get")
-    fun getClientsPasswords(@PathVariable clientKeyPinData: ClientKeyPinData) : Collection<Password>?{
+    fun getClientsPasswords(@RequestBody clientKeyPinData: ClientKeyPinData) : Collection<Password>?{
         return passwordService.getClientsPasswords(clientKeyPinData)
     }
+
     /*
         endpoint for save password
         return 0 if password is saved successfully
@@ -31,4 +32,5 @@ class PasswordController {
     fun savePassword(@RequestBody passwordRequestData: PasswordRequestData) : Int{
         return passwordService.savePassword(passwordRequestData)
     }
+
 }
