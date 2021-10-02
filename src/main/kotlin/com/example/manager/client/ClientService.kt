@@ -75,20 +75,20 @@ class ClientService {
     set up pin for stay-login on device
     return client private key encrypted by pin
      */
-    fun registerSetUpPin(clientPinSetUp: ClientKeyPinData) : String{
+    fun registerSetUpPin(clientKeyPinData: ClientKeyPinData) : String{
         //check if stay-login key is valid
-        var client: Client = logged[clientPinSetUp.key] ?: return "1"
+        var client: Client = logged[clientKeyPinData.key] ?: return "1"
 
         //check if pin isn't already set
         if(client.password != "")
             return "0"
 
         //generate secrete key from pin
-        val secretKey = SymmetricalCryptoUtils.getKeyFromPassword(clientPinSetUp.pinCode)
+        val secretKey = SymmetricalCryptoUtils.getKeyFromPassword(clientKeyPinData.pinCode)
 
         //hash pin
         client.password = Base64.getEncoder()
-            .encodeToString(Hashing.sha256().hashString(clientPinSetUp.pinCode, StandardCharsets.UTF_8).asBytes())
+            .encodeToString(Hashing.sha256().hashString(clientKeyPinData.pinCode, StandardCharsets.UTF_8).asBytes())
         //encrypt private key by secret key
         client.privateKey = SymmetricalCryptoUtils.encryptMessageAsBase64(secretKey, Base64.getDecoder().decode(client.privateKey))
 
@@ -132,13 +132,13 @@ class ClientService {
     login with stay-login pin
     return client private key encrypted by pin
      */
-    fun loginWithPin(clientPinSetUp: ClientKeyPinData): String {
+    fun loginWithPin(clientKeyPinData: ClientKeyPinData): String {
         //check if stay-login key is valid
-        var client: Client = logged[clientPinSetUp.key] ?: return "1"
+        var client: Client = logged[clientKeyPinData.key] ?: return "1"
 
 
         //if everything in order return client encrypted private key
-        if (client.password == Base64.getEncoder().encodeToString(Hashing.sha256().hashString(clientPinSetUp.pinCode, StandardCharsets.UTF_8).asBytes()))
+        if (client.password == Base64.getEncoder().encodeToString(Hashing.sha256().hashString(clientKeyPinData.pinCode, StandardCharsets.UTF_8).asBytes()))
             return client.privateKey
         //if combination of stay-login key and pin isn't valid
         return "0"

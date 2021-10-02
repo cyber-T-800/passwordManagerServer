@@ -6,6 +6,7 @@ import java.security.spec.EncodedKeySpec
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.RSAPublicKeySpec
 import java.security.spec.X509EncodedKeySpec
+import java.util.*
 import javax.crypto.Cipher
 
 object AsymmetricalCryptoUtils{
@@ -91,6 +92,26 @@ object AsymmetricalCryptoUtils{
     }
     fun decryptMessage(privateKey: PrivateKey, message : ByteArray) : ByteArray{
         return decryptMessage(initializeDecryptCipher(privateKey), message)
+    }
+
+    fun encryptMessageAsBase64(cipher : Cipher, message : ByteArray) : String{
+        return Base64.getEncoder().encodeToString(encryptMessage(cipher, message))
+    }
+    fun encryptMessageAsBase64(publicKey: PublicKey, message: ByteArray) : String{
+        return encryptMessageAsBase64(initializeEncryptCipher(publicKey), message)
+    }
+    fun encryptMessageAsBase64(privateKey: PrivateKey, message: ByteArray) : String{
+        return encryptMessageAsBase64(initializeEncryptCipher(privateKey), message)
+    }
+
+    fun decryptMessage(cipher : Cipher, messageInBase64: String) : ByteArray{
+        return cipher.doFinal(Base64.getDecoder().decode(messageInBase64))
+    }
+    fun decryptMessage(publicKey: PublicKey, messageInBase64: String) : ByteArray{
+        return decryptMessage(initializeDecryptCipher(publicKey), messageInBase64)
+    }
+    fun decryptMessage(privateKey: PrivateKey, messageInBase64: String) : ByteArray{
+        return decryptMessage(initializeDecryptCipher(privateKey), messageInBase64)
     }
 }
 

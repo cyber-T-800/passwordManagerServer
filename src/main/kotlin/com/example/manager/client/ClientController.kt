@@ -27,8 +27,8 @@ class ClientController {
 
     //set up pin for stay-login server instance
     @PostMapping("register/pin")
-    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientKeyPinData) : String {
-        return clientService.registerSetUpPin(clientPinSetUp)
+    fun registerSetUpPin(@RequestBody clientKeyPinData: ClientKeyPinData) : String {
+        return clientService.registerSetUpPin(clientKeyPinData)
     }
 
     @PostMapping("login")
@@ -37,8 +37,8 @@ class ClientController {
     }
 
     @PostMapping("login/pin")
-    fun loginWithPin(@RequestBody clientPinSetUp: ClientKeyPinData) : String{
-        return clientService.loginWithPin(clientPinSetUp)
+    fun loginWithPin(@RequestBody clientKeyPinData: ClientKeyPinData) : String{
+        return clientService.loginWithPin(clientKeyPinData)
     }
 
 }

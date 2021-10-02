@@ -22,7 +22,7 @@ data class Password(
     var username : String,
     @Column(name = "encrypted_password")
     var encryptedPassword : String,
-    var clientId : Int
+    var clientId : Long
 ){
     constructor() : this(0, "", "", "", 0)
 }
