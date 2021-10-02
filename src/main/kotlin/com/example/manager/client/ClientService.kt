@@ -70,16 +70,12 @@ class ClientService {
     }
 
 
-    //only for testing purposes
-    fun getLogged() : Collection<Client>{
-        return logged.values
-    }
 
     /*
     set up pin for stay-login on device
     return client private key encrypted by pin
      */
-    fun registerSetUpPin(clientPinSetUp: ClientPinSetUp) : String{
+    fun registerSetUpPin(clientPinSetUp: ClientKeyPinData) : String{
         //check if stay-login key is valid
         var client: Client = logged[clientPinSetUp.key] ?: return "1"
 
@@ -136,7 +132,7 @@ class ClientService {
     login with stay-login pin
     return client private key encrypted by pin
      */
-    fun loginWithPin(clientPinSetUp: ClientPinSetUp): String {
+    fun loginWithPin(clientPinSetUp: ClientKeyPinData): String {
         //check if stay-login key is valid
         var client: Client = logged[clientPinSetUp.key] ?: return "1"
 

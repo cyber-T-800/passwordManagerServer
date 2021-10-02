@@ -2,7 +2,6 @@ package com.example.manager.client
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import reactor.netty.transport.ClientTransport
 
 @RestController
 @RequestMapping("api/client")
@@ -28,7 +27,7 @@ class ClientController {
 
     //set up pin for stay-login server instance
     @PostMapping("register/pin")
-    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String {
+    fun registerSetUpPin(@RequestBody clientPinSetUp: ClientKeyPinData) : String {
         return clientService.registerSetUpPin(clientPinSetUp)
     }
 
@@ -38,12 +37,8 @@ class ClientController {
     }
 
     @PostMapping("login/pin")
-    fun loginWithPin(@RequestBody clientPinSetUp: ClientPinSetUp) : String{
+    fun loginWithPin(@RequestBody clientPinSetUp: ClientKeyPinData) : String{
         return clientService.loginWithPin(clientPinSetUp)
     }
 
-    @GetMapping("get/logged")
-    fun getLogged() : Collection<Client>{
-        return clientService.getLogged()
-    }
 }
