@@ -24,12 +24,11 @@ class PasswordController {
 
     /*
         endpoint for save password
-        return 0 if password is saved successfully
-        return 1 if stay-logged key is invalid
-        return 2 if pin code is invalid
+        return password ID
+        return 0 if stay-logged key or pin is invalid
      */
     @PostMapping("save")
-    fun savePassword(@RequestBody passwordRequestData: PasswordRequestData) : Int{
+    fun savePassword(@RequestBody passwordRequestData: PasswordRequestData) : Long{
         return passwordService.savePassword(passwordRequestData)
     }
 

@@ -20,7 +20,7 @@ data class Password(
     var id : Long,
     var website : String,
     var username : String,
-    @Column(name = "encrypted_password")
+    @Column(name = "encrypted_password", length = 2000)
     var encryptedPassword : String,
     var clientId : Long
 ){

@@ -25,15 +25,14 @@ class PasswordService {
 
     /*
         endpoint for save password
-        return 0 if password is saved successfully
-        return 1 if stay-logged key is invalid
-        return 2 if pin code is invalid
+        return password ID
+        return 0 if stay-logged key or pin is invalid
      */
-    fun savePassword(passwordRequestData: PasswordRequestData) : Int{
-        val requestedClient : Client = clientService.logged[passwordRequestData.clientKeyPinData.key] ?: return 1
+    fun savePassword(passwordRequestData: PasswordRequestData) : Long{
+        val requestedClient : Client = clientService.logged[passwordRequestData.clientKeyPinData.key] ?: return 0
         //check if pin code is valid
         if(requestedClient.password != Base64.getEncoder().encodeToString(Hashing.sha256().hashString(passwordRequestData.clientKeyPinData.pinCode, StandardCharsets.UTF_8).asBytes()))
-            return 2
+            return 0
         val publicKey : PublicKey
         passwordRequestData.clientKeyPinData.let {
             val privateKey = AsymmetricalCryptoUtils.privateKeyFromBytes(SymmetricalCryptoUtils.decryptMessage(it.pinCode, requestedClient.privateKey))
@@ -42,12 +41,11 @@ class PasswordService {
 
         //encrypt by client public key
         passwordRequestData.password.let {
-            it.id = requestedClient.id
+            it.clientId = requestedClient.id
             it.encryptedPassword = AsymmetricalCryptoUtils.encryptMessageAsBase64(publicKey, it.encryptedPassword.toByteArray(StandardCharsets.UTF_8))
             passwordRepository.save(it)
+            return it.id
         }
-
-        return 0
     }
 
 
