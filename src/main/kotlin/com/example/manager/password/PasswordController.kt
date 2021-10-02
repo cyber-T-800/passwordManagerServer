@@ -1,6 +1,7 @@
 package com.example.manager.password
 
 import com.example.manager.client.Client
+import com.example.manager.client.ClientKeyPinData
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -11,9 +12,14 @@ class PasswordController {
     @Autowired
     lateinit var passwordService: PasswordService
 
-    @GetMapping("get/{clientId}")
-    fun getByClientId(@PathVariable clientId : Long) : Collection<Password>{
-        return passwordService.getByClientId(clientId)
+
+    /*
+        get passwords by combination of client API key and pin code
+        return null combination is invalid
+     */
+    @PostMapping("get")
+    fun getClientsPasswords(@PathVariable clientKeyPinData: ClientKeyPinData) : Collection<Password>?{
+        return passwordService.getClientsPasswords(clientKeyPinData)
     }
     /*
         endpoint for save password

@@ -1,6 +1,7 @@
 package com.example.manager.password
 
 import com.example.manager.client.Client
+import com.example.manager.client.ClientKeyPinData
 import com.example.manager.client.ClientService
 import com.example.manager.utils.AsymmetricalCryptoUtils
 import com.example.manager.utils.SymmetricalCryptoUtils
@@ -30,6 +31,7 @@ class PasswordService {
      */
     fun savePassword(passwordRequestData: PasswordRequestData) : Int{
         val requestedClient : Client = clientService.logged[passwordRequestData.clientKeyPinData.key] ?: return 1
+        //check if pin code is valid
         if(requestedClient.password != Base64.getEncoder().encodeToString(Hashing.sha256().hashString(passwordRequestData.clientKeyPinData.pinCode, StandardCharsets.UTF_8).asBytes()))
             return 2
         val publicKey : PublicKey
@@ -48,8 +50,17 @@ class PasswordService {
         return 0
     }
 
-    fun getByClientId(ID : Long) : Collection<Password>{
-        return passwordRepository.findByClientId(ID)
+
+    /*
+        get passwords by combination of client API key and pin code
+        return null combination is invalid
+     */
+    fun getClientsPasswords(clientKeyPinData: ClientKeyPinData) : Collection<Password>?{
+        val requestedClient : Client = clientService.logged[clientKeyPinData.key] ?: return null
+        //check if pin code is valid
+        if(requestedClient.password != Base64.getEncoder().encodeToString(Hashing.sha256().hashString(clientKeyPinData.pinCode, StandardCharsets.UTF_8).asBytes()))
+            return null
+        return passwordRepository.findByClientId(requestedClient.id)
     }
 
 
