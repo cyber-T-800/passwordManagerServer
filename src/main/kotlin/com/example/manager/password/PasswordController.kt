@@ -32,4 +32,24 @@ class PasswordController {
         return passwordService.savePassword(passwordRequestData)
     }
 
+    /*
+        delete password from database
+        return 0 operation successful
+        return 1 if client stay-login data are invalid
+        return 2 if password don't belong to requested client
+     */
+    @PostMapping("delete")
+    fun deletePassword(@RequestBody passwordRequestData: PasswordRequestData) : Long{
+        return passwordService.deletePassword(passwordRequestData)
+    }
+    /*
+        delete password from database
+        return 0 operation successful
+        return 1 if client stay-login data are invalid
+        return 2 if password don't belong to requested client
+    */
+    @PostMapping("edit")
+    fun editPassword(@RequestBody passwordRequestData: PasswordRequestData) : Long{
+        return passwordService.editPassword(passwordRequestData)
+    }
 }
