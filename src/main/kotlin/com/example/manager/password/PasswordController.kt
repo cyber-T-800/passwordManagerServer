@@ -43,7 +43,7 @@ class PasswordController {
         return passwordService.deletePassword(passwordRequestData)
     }
     /*
-        delete password from database
+        edit password in database
         return 0 operation successful
         return 1 if client stay-login data are invalid
         return 2 if password don't belong to requested client

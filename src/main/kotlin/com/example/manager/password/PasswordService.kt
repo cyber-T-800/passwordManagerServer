@@ -9,6 +9,7 @@ import com.google.common.hash.Hashing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringApplication
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.nio.charset.StandardCharsets
 import java.security.PublicKey
 import java.util.*
@@ -83,11 +84,12 @@ class PasswordService {
         return 2
     }
     /*
-        delete password from database
+        edit password in database
         return 0 operation successful
         return 1 if client stay-login data are invalid
         return 2 if password don't belong to requested client
     */
+    @Transactional
     fun editPassword(passwordRequestData: PasswordRequestData): Long {
         val requestedClient : Client = clientService.logged[passwordRequestData.clientKeyPinData.key] ?: return 1
         //check if pin code is valid
