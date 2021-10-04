@@ -9,7 +9,7 @@ data class Client(
     @Id
     @SequenceGenerator(
         name = "client_id_generator",
-        sequenceName = "sequence_generator",
+        sequenceName = "client_id_sequence",
         allocationSize = 1
     )
     @GeneratedValue(

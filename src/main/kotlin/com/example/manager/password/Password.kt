@@ -9,7 +9,7 @@ data class Password(
     @Id
     @SequenceGenerator(
         name = "password_id_generator",
-        sequenceName = "sequence_generator",
+        sequenceName = "password_id_sequence",
         allocationSize = 1
 
     )
